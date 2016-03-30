@@ -1,6 +1,5 @@
 package com.example.carlos.hellospeech;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -9,10 +8,7 @@ import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,10 +17,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 1234;
+    private static final String LOCALE_SPANISH = "es-ES";
+
     private Button start;
     private TextView speech;
-    // private Dialog matchTextDialog;
-    // private ListView textList;
     private List<String> matchesText;
 
     @Override
@@ -41,13 +37,11 @@ public class MainActivity extends AppCompatActivity {
                 if (isConnected()) {
                     Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES");
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LOCALE_SPANISH);
                     startActivityForResult(intent, REQUEST_CODE);
                 } else {
                     Toast.makeText(getApplicationContext(), "Please connect to internet", Toast.LENGTH_LONG).show();
                 }
-
-
             }
         });
     }
@@ -55,32 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
         return networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected();
     }
-/*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            matchTextDialog = new Dialog(MainActivity.this);
-            matchTextDialog.setContentView(R.layout.dialog_matches_frag);
-            matchTextDialog.setTitle("Select Matching Text");
-            textList = (ListView) matchTextDialog.findViewById(R.id.list);
-            matchesText = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, matchesText);
-            textList.setAdapter(adapter);
-            textList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    speech.setText("You said " + matchesText.get(position));
-                    matchTextDialog.hide();
-                }
-            });
-            matchTextDialog.show();
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-    */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
